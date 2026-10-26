@@ -1,0 +1,5 @@
+flask>=3.0
+requests>=2.31
+pymysql>=1.1
+sqlglot>=25,<30
+jsonschema>=4.18,<5

@@ -1,0 +1,104 @@
+{
+  "projectName": "经销商收车检测模块",
+  "testCases": [
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测管理菜单-评估师角色可见菜单入口",
+      "priority": "Medium: P2",
+      "description": "验证二手车评估师角色登录后，首页菜单中显示"检测管理"入口",
+      "testCase": "检测管理菜单-评估师角色可见菜单入口",
+      "steps": "1. 使用二手车评估师账号登录企微 H5\n2. 进入首页，查看底部或侧边菜单列表\n3. 查找"检测管理"菜单项",
+      "expectedResult": "1. 首页菜单中显示"检测管理"入口\n2. 点击"检测管理"可正常进入检测任务列表页",
+      "deliveryTeam": "其他团队-NBMS"
+    },
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测管理菜单-非评估师角色不可见菜单入口",
+      "priority": "Medium: P2",
+      "description": "验证非二手车评估师角色登录后，首页菜单中不显示"检测管理"入口",
+      "testCase": "检测管理菜单-非评估师角色不可见菜单入口",
+      "steps": "1. 使用非二手车评估师账号（如普通经销商账号）登录企微 H5\n2. 进入首页，查看菜单列表\n3. 查找是否存在"检测管理"菜单项",
+      "expectedResult": "1. 首页菜单中不显示"检测管理"入口\n2. 菜单列表中无法找到检测相关功能入口",
+      "deliveryTeam": "其他团队-NBMS"
+    },
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测任务列表-有数据时正常展示列表",
+      "priority": "Medium: P2",
+      "description": "验证系统中存在检测任务时，列表页正确展示任务数据及各字段",
+      "testCase": "检测任务列表-有数据时正常展示列表",
+      "steps": "1. 使用二手车评估师账号登录企微 H5\n2. 点击"检测管理"进入检测任务列表页\n3. 查看列表中的任务数据",
+      "expectedResult": "1. 列表正常展示当前经销商下的检测任务\n2. 每条任务显示：任务编码、旧车 VIN、创建时间、任务状态\n3. 任务状态显示为以下之一：草稿、已生成、已发送、已查看",
+      "deliveryTeam": "其他团队-NBMS"
+    },
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测任务列表-无数据时显示暂无数据",
+      "priority": "Medium: P2",
+      "description": "验证系统中无检测任务时，列表页显示空状态提示",
+      "testCase": "检测任务列表-无数据时显示暂无数据",
+      "steps": "1. 使用一个尚未创建过检测任务的评估师账号登录企微 H5\n2. 点击"检测管理"进入检测任务列表页\n3. 查看列表区域",
+      "expectedResult": "1. 列表区域显示"暂无数据"或空状态提示\n2. 页面不报错，布局正常",
+      "deliveryTeam": "其他团队-NBMS"
+    },
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测任务列表-按VIN搜索过滤任务",
+      "priority": "Medium: P2",
+      "description": "验证在列表页搜索框输入 VIN 关键字后，列表实时过滤展示匹配结果",
+      "testCase": "检测任务列表-按VIN搜索过滤任务",
+      "steps": "1. 进入检测任务列表页，确认列表中有多条任务\n2. 在搜索框中输入某辆车的 VIN 关键字（如 VIN 的后 6 位）\n3. 查看列表过滤结果",
+      "expectedResult": "1. 列表仅展示 VIN 包含该关键字的任务\n2. 不匹配的任务不显示\n3. 清空搜索框后，列表恢复展示全部任务",
+      "deliveryTeam": "其他团队-NBMS"
+    },
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测任务列表-搜索无匹配结果时显示暂无数据",
+      "priority": "Medium: P2",
+      "description": "验证搜索不存在的 VIN 时，列表显示空状态",
+      "testCase": "检测任务列表-搜索无匹配结果时显示暂无数据",
+      "steps": "1. 进入检测任务列表页\n2. 在搜索框中输入一个不存在的 VIN（如"ZZZZZZZZZ"）\n3. 查看列表区域",
+      "expectedResult": "1. 列表区域显示"暂无数据"\n2. 页面不报错",
+      "deliveryTeam": "其他团队-NBMS"
+    },
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测任务详情-点击任务进入详情页",
+      "priority": "Medium: P2",
+      "description": "验证点击列表中的任务后，正确跳转至任务详情页",
+      "testCase": "检测任务详情-点击任务进入详情页",
+      "steps": "1. 进入检测任务列表页\n2. 点击列表中的某条检测任务\n3. 查看跳转后的页面",
+      "expectedResult": "1. 成功跳转至该任务的详情页\n2. 页面标题或面包屑显示"检测任务详情"相关字样",
+      "deliveryTeam": "其他团队-NBMS"
+    },
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测任务详情-车辆基本信息展示",
+      "priority": "Medium: P2",
+      "description": "验证任务详情页正确展示车辆基本信息",
+      "testCase": "检测任务详情-车辆基本信息展示",
+      "steps": "1. 进入某条检测任务的详情页\n2. 查看车辆基本信息区域",
+      "expectedResult": "1. 展示车辆 VIN\n2. 展示品牌名称\n3. 展示车系名称\n4. 展示车型名称\n5. 展示车牌号\n6. 展示里程数",
+      "deliveryTeam": "其他团队-NBMS"
+    },
+    {
+      "requirement": "CVN-13575",
+      "module": "NBMS",
+      "title": "【CVN-13575】【NBMS】【UI】检测任务详情-四步骤录入内容完整展示",
+      "priority": "Medium: P2",
+      "description": "验证任务详情页展示四步骤的完整录入内容",
+      "testCase": "检测任务详情-四步骤录入内容完整展示",
+      "steps": "1. 进入一条已完成四步骤录入的检测任务详情页\n2. 依次查看基本信息、基本照片、重点检测、车辆检测四个部分的内容",
+      "expectedResult": "1. 基本信息区域展示客户姓名和手机号\n2. 基本照片区域展示已上传的照片\n3. 重点检测区域展示配件照片和轮胎照片\n4. 车辆检测区域展示骨架/外观/内饰各检测项的勾选结果和问题照片",
+      "deliveryTeam": "其他团队-NBMS"
+    }
+  ]
+}

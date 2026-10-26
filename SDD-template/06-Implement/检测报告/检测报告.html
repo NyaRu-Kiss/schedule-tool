@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>二手车检测报告</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #e5e7eb; }
+    body {
+      display: flex;
+      justify-content: center;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page-root {
+      width: 375px;
+      min-height: 100%;
+      background: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 44px;
+      position: relative;
+    }
+    p { margin: 0; }
+    img { display: block; }
+
+    /* ── MainHeader ── */
+    .main-header {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+      padding: 16px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .main-header-title {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 26px;
+      color: #000;
+    }
+    .main-header-subtitle-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .main-header-subtitle {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #1f2937;
+    }
+    .main-header-subtitle .medium {
+      font-weight: 500;
+    }
+
+    /* ── VehicleSpecsGrid ── */
+    .specs-grid-wrapper {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 16px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .specs-grid {
+      background: #fff;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 74px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .specs-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
+      height: 74px;
+      padding: 9px 4px;
+      border: 1px solid #e2e8f0;
+      border-right: none;
+    }
+    .specs-cell:last-child { border-right: 1px solid #e2e8f0; }
+    .specs-cell-label {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 18px;
+      color: #4b5563;
+      text-align: center;
+      width: 100%;
+    }
+    .specs-cell-value {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 18px;
+      color: #1e293b;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+    }
+    .specs-cell-value.accent { color: #1c6bba; }
+
+    /* ── VehicleInfoList ── */
+    .vehicle-info-wrapper {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 8px 16px 16px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .info-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .info-cell {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-bottom: none;
+      display: flex;
+      flex: 1;
+      gap: 4px;
+      align-items: center;
+      padding: 9px;
+    }
+    .info-row:last-child .info-cell { border-bottom: 1px solid #e2e8f0; }
+    .info-label {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 18px;
+      color: #4b5563;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .info-value {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 18px;
+      color: #1e293b;
+      text-align: right;
+      flex: 1;
+    }
+    .info-value .medium { font-weight: 500; }
+
+    /* ── Spacer ── */
+    .spacer-12 { height: 12px; width: 100%; flex-shrink: 0; }
+
+    /* ── PhotoGallery ── */
+    .photo-gallery-wrapper {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 24px 16px;
+      width: 375px;
+      flex-shrink: 0;
+    }
+    .tab-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      width: 100%;
+    }
+    .tab-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 2px;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: center;
+    }
+    .tab-btn.active { background: #1c6bba; color: #fff; }
+    .tab-btn.inactive { background: #f3f4f6; color: #4b5563; }
+
+    .main-photo-container {
+      position: relative;
+      height: 268px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .main-photo {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 4px;
+      width: 100%;
+    }
+    .main-photo img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .nav-btn {
+      position: absolute;
+      background: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      width: 32px;
+      padding: 8px;
+      border-radius: 999px;
+      top: 118px;
+    }
+    .nav-btn.left { left: 8px; }
+    .nav-btn.right { left: 318px; }
+    .nav-btn img { width: 16px; height: 16px; }
+    .plate-overlay {
+      position: absolute;
+      background: rgba(0,0,0,0.5);
+      bottom: 8.5px;
+      left: 8px;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .plate-overlay-text {
+      font-size: 11px;
+      line-height: 18px;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      height: 183px;
+      padding-top: 8px;
+      width: 100%;
+    }
+    .thumb-item {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      grid-row: span 1;
+    }
+    .thumb-item.selected { border: 1px solid #1c6bba; }
+    .thumb-item img {
+      position: absolute;
+      height: 100%;
+      left: -16.67%;
+      top: 0;
+      width: 133.33%;
+      object-fit: cover;
+    }
+
+    /* ── Section Heading ── */
+    .section-heading {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 16px 16px 8px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .section-heading-inner {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .section-heading-bar {
+      background: #000;
+      height: 16px;
+      width: 2px;
+      flex-shrink: 0;
+    }
+    .section-heading-text-lg {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      color: #000;
+    }
+    .section-heading-text-md {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      color: #000;
+    }
+
+    /* ── MajorInspection Icons ── */
+    .major-inspection-wrapper {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 375px;
+      flex-shrink: 0;
+    }
+    .major-icons-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 0 16px;
+      width: 100%;
+    }
+    .major-icon-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      padding: 16px 0;
+    }
+    .major-icon-item.active { border-bottom: 2px solid #1c6bba; }
+    .major-icon-img { position: relative; width: 24px; height: 24px; flex-shrink: 0; }
+    .major-icon-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .major-icon-label {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      justify-content: center;
+    }
+    .major-icon-status-img { position: relative; width: 16px; height: 16px; flex-shrink: 0; }
+    .major-icon-status-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .major-icon-text-error {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 18px;
+      color: #bf2012;
+      white-space: nowrap;
+    }
+    .major-icon-text-ok {
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 18px;
+      color: #4b5563;
+      white-space: nowrap;
+    }
+
+    /* ── SkeletonDiagram ── */
+    .skeleton-wrapper {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+      overflow: hidden;
+      padding: 16px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .skeleton-photo {
+      position: relative;
+      height: 268px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .skeleton-photo > .photo-wrap {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 4px;
+      width: 100%;
+    }
+    .skeleton-photo > .photo-wrap > img.base-img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .skeleton-overlay-img {
+      position: absolute;
+      height: 269px;
+      left: 0;
+      top: -1px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .skeleton-overlay-img img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .damage-count {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 18px;
+      color: #333;
+      white-space: nowrap;
+    }
+    .damage-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px 8px;
+      padding-top: 8px;
+      width: 100%;
+    }
+    .damage-tag {
+      background: #f3f4f6;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .damage-tag.highlighted {
+      background: #fff;
+      border: 1px solid #1c6bba;
+    }
+    .damage-tag-icon { position: relative; width: 16px; height: 16px; flex-shrink: 0; }
+    .damage-tag-icon img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .damage-tag-text {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 18px;
+      color: #4b5563;
+      white-space: nowrap;
+    }
+
+    /* ── PaintThickness ── */
+    .paint-wrapper {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      overflow: hidden;
+      padding: 16px;
+      border-radius: 4px;
+      width: 375px;
+      flex-shrink: 0;
+    }
+    .paint-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      width: 100%;
+    }
+    .paint-cell {
+      border-top: 1px solid #e2e8f0;
+      border-left: 1px solid #e2e8f0;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: flex-start;
+    }
+    /* right border on col-5 */
+    .paint-cell:nth-child(5n) { border-right: 1px solid #e2e8f0; }
+    /* bottom border on row-4 */
+    .paint-cell.row4 { border-bottom: 1px solid #e2e8f0; }
+    .paint-cell.empty { background: #f9fafb; }
+    .paint-cell-label {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 17px;
+      color: #64748b;
+      text-align: center;
+      width: 100%;
+    }
+    .paint-cell-range {
+      font-size: 8px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #64748b;
+      text-align: center;
+      width: 100%;
+    }
+    .paint-cell-value {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 20px;
+      color: #1e293b;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+    }
+    .paint-cell-value.error { color: #bf2012; }
+
+    /* ── Inspector Info ── */
+    .inspector-wrapper {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px 16px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    .inspector-inner {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      width: 100%;
+    }
+    .inspector-grid {
+      background: #fff;
+      display: grid;
+      grid-template-columns: 1fr;
+      width: 100%;
+    }
+    .inspector-row {
+      border: 1px solid #e2e8f0;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 9px;
+    }
+    .inspector-row + .inspector-row { border-top: none; }
+    .inspector-label {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 18px;
+      color: #4b5563;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      width: 77px;
+      flex-shrink: 0;
+    }
+    .inspector-value {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      color: #1e293b;
+      flex: 1;
+      text-align: right;
+    }
+    .inspector-sig-wrapper {
+      position: relative;
+      flex: 1;
+      height: 40px;
+    }
+    .inspector-sig-img {
+      position: absolute;
+      height: 76px;
+      right: 0;
+      top: -21px;
+      width: 106px;
+      overflow: hidden;
+    }
+    .inspector-sig-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+<div class="page-root" data-node-id="809:115078" data-name="检测报告">
+
+  <!-- MainHeader -->
+  <div class="main-header" data-node-id="809:115079" data-name="MainHeader">
+    <div data-node-id="809:115080" data-name="Heading 1">
+      <p class="main-header-title" data-node-id="809:115081">二手车检测报告</p>
+    </div>
+    <div class="main-header-subtitle-row" data-node-id="809:115082" data-name="Container">
+      <div data-node-id="809:115083" data-name="Heading 2">
+        <div data-node-id="809:115084">
+          <p class="main-header-subtitle">MY22 V90 Cross Country B5</p>
+          <p class="main-header-subtitle"><span>AWD </span><span class="medium">智尊版</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VehicleSpecsGrid -->
+  <div class="specs-grid-wrapper" data-node-id="809:115087">
+    <div data-node-id="809:115088" data-name="Section - VehicleSpecsGrid">
+      <div class="specs-grid" data-node-id="809:115089" data-name="Background">
+        <!-- Col 1: 本次交易总价 -->
+        <div class="specs-cell" style="order:1" data-node-id="809:115105">
+          <p class="specs-cell-label" data-node-id="809:115107">本次交易<br>总价金额</p>
+          <p class="specs-cell-value accent" data-node-id="809:115109">¥200,000</p>
+        </div>
+        <!-- Col 2: 车辆评估价格 -->
+        <div class="specs-cell" style="order:2" data-node-id="809:115090">
+          <p class="specs-cell-label" data-node-id="809:115092">车辆<br>评估价格</p>
+          <p class="specs-cell-value" data-node-id="I809:115094;453:174007">¥180,000</p>
+        </div>
+        <!-- Col 3: 残值保障金额 -->
+        <div class="specs-cell" style="order:3" data-node-id="809:115095">
+          <p class="specs-cell-label" data-node-id="809:115097">残值保障金<br>金额</p>
+          <p class="specs-cell-value" data-node-id="809:115099">¥10,000</p>
+        </div>
+        <!-- Col 4: 国补/区补 -->
+        <div class="specs-cell" style="order:4;border-right:1px solid #e2e8f0" data-node-id="809:115100">
+          <p class="specs-cell-label" data-node-id="809:115102">国补/区补等其他补贴</p>
+          <p class="specs-cell-value" data-node-id="809:115104">¥10,000</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VehicleInfoList -->
+  <div class="vehicle-info-wrapper" data-node-id="831:115932">
+    <div class="info-list" data-node-id="831:115933">
+      <div class="info-row" data-node-id="831:115934">
+        <div class="info-cell" data-node-id="831:115935">
+          <span class="info-label" data-node-id="831:115937">车架号</span>
+          <span class="info-value" data-node-id="831:115939">LVYPDM1D1SP133126</span>
+        </div>
+      </div>
+      <div class="info-row" data-node-id="831:115940">
+        <div class="info-cell" data-node-id="831:115941">
+          <span class="info-label" data-node-id="831:115943">车牌号</span>
+          <span class="info-value" data-node-id="831:115945"><span class="medium">京</span>JDP808</span>
+        </div>
+      </div>
+      <div class="info-row" data-node-id="831:115952">
+        <div class="info-cell" data-node-id="831:115953">
+          <span class="info-label" data-node-id="831:115955">表显里程</span>
+          <span class="info-value" data-node-id="831:115957">39301<span class="medium">公里</span></span>
+        </div>
+      </div>
+      <div class="info-row" data-node-id="831:115946">
+        <div class="info-cell" style="border-bottom:1px solid #e2e8f0" data-node-id="831:115947">
+          <span class="info-label" data-node-id="831:115949">首次上牌日期</span>
+          <span class="info-value" data-node-id="831:115951">2009<span class="medium">年</span>12<span class="medium">月</span>24<span class="medium">日</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spacer -->
+  <div class="spacer-12" data-node-id="814:115573" data-name="Heading 5"></div>
+
+  <!-- PhotoGallery -->
+  <div class="photo-gallery-wrapper" data-node-id="809:115131" data-name="Section - PhotoGallery">
+    <!-- Tab bar -->
+    <div class="tab-bar" data-node-id="809:115132">
+      <div class="tab-btn active" data-node-id="809:115133"><p data-node-id="809:115134">外观</p></div>
+      <div class="tab-btn inactive" data-node-id="809:115135"><p data-node-id="809:115136">内饰</p></div>
+      <div class="tab-btn inactive" data-node-id="809:115137"><p data-node-id="809:115138">车架号</p></div>
+      <div class="tab-btn inactive" data-node-id="809:115139"><p data-node-id="809:115140">手续</p></div>
+    </div>
+
+    <!-- Main photo -->
+    <div class="main-photo-container" data-node-id="809:115141">
+      <div class="main-photo" data-node-id="809:115142">
+        <img alt="" src="images/a37e1be1f55430e162eb9ebed4ca54b276a13451.png" />
+      </div>
+      <div class="nav-btn left" data-node-id="809:115143">
+        <img alt="" src="images/3ce9f22520b3fec0788583c3346e78e98048f13b.svg" data-node-id="I809:115144;7885:26995" />
+      </div>
+      <div class="nav-btn right" data-node-id="809:115145">
+        <img alt="" src="images/456a916ef30efc6fea45cdf1269624174dc7b6f8.svg" data-node-id="I809:115146;7885:28461" />
+      </div>
+      <div class="plate-overlay" data-node-id="809:115147">
+        <p class="plate-overlay-text" data-node-id="809:115148"><span class="medium">京</span>JDP808</p>
+      </div>
+    </div>
+
+    <!-- Thumbnail grid -->
+    <div class="thumb-grid" data-node-id="809:115149">
+      <div class="thumb-item" data-node-id="809:115150">
+        <img alt="" src="images/a3920c330b7f4d28eea157e7c799c53e13f45390.png" />
+      </div>
+      <div class="thumb-item" data-node-id="809:115151">
+        <img alt="" src="images/40c4b0ebffdb3b32db0c6fadb1d30309bfd68ed4.png" />
+      </div>
+      <div class="thumb-item" data-node-id="809:115152">
+        <img alt="" src="images/af58c2467537cbfb5c1edfe92020e73e5497f99d.png" />
+      </div>
+      <div class="thumb-item" data-node-id="809:115153">
+        <img alt="" src="images/c2c2724272e8fd9e2c9d56dde2fbf7beb9f7fbf6.png" />
+      </div>
+      <div class="thumb-item" data-node-id="809:115154">
+        <img alt="" src="images/d157a1438741bcc09bbe65a12cada63b63d8c09a.png" />
+      </div>
+      <div class="thumb-item" data-node-id="809:115155">
+        <img alt="" src="images/9d4ce1ad860567669212688a08ec56fb485c3e62.png" />
+      </div>
+      <div class="thumb-item selected" data-node-id="809:115156">
+        <img alt="" src="images/cd702bcb6173611ce60ab3548454a2b6fc5a660a.png" />
+      </div>
+      <div class="thumb-item" data-node-id="809:115157">
+        <img alt="" src="images/fe44b7968fc4e336a42bac8691f38c611c7a9310.png" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Heading: 重点检测 -->
+  <div class="section-heading" data-node-id="809:115158" data-name="Heading 1">
+    <div class="section-heading-inner" data-node-id="809:115159">
+      <div class="section-heading-bar" data-node-id="809:115160"></div>
+      <p class="section-heading-text-lg" data-node-id="809:115161">重点检测</p>
+    </div>
+  </div>
+
+  <!-- MajorInspection Icons -->
+  <div class="major-inspection-wrapper" data-node-id="809:115162">
+    <div class="major-icons-grid" data-node-id="809:115163" data-name="Section - MajorInspectionIcons">
+      <!-- 火烧 (active/error) -->
+      <div class="major-icon-item active" data-node-id="809:115164">
+        <div class="major-icon-img" data-node-id="809:115165">
+          <img alt="" src="images/b020cfa2c75f9d7c355d830f5c616689b7c8fc1d.svg" data-node-id="I809:115165;7788:27285" />
+        </div>
+        <div class="major-icon-label" data-node-id="809:115166">
+          <div class="major-icon-status-img" data-node-id="809:115167">
+            <img alt="" src="images/cc7a2dd39e0abd78f9514b4fbe3608a510a0e631.svg" data-node-id="I809:115167;7820:22032" />
+          </div>
+          <p class="major-icon-text-error" data-node-id="809:115168">火烧</p>
+        </div>
+      </div>
+      <!-- 水淹 (ok) -->
+      <div class="major-icon-item" data-node-id="809:115174">
+        <div class="major-icon-img" data-node-id="809:115175">
+          <img alt="" src="images/56bebc617df0a482fd8e69519bc32f16f1d523c3.svg" data-node-id="I809:115175;7788:26658" />
+        </div>
+        <div class="major-icon-label" data-node-id="809:115176">
+          <div class="major-icon-status-img" data-node-id="809:115177">
+            <img alt="" src="images/3a4dea9a4188a89473c7b1d5f181125842d30090.svg" data-node-id="I809:115177;7883:29893" />
+          </div>
+          <p class="major-icon-text-ok" data-node-id="809:115178">无水淹</p>
+        </div>
+      </div>
+      <!-- 结构损伤 (ok) -->
+      <div class="major-icon-item" data-node-id="809:115184">
+        <div class="major-icon-img" data-node-id="809:115185">
+          <img alt="" src="images/b5ce663d76c838cfc314f6684d8e774b03c2d1cf.svg" data-node-id="I809:115185;7820:21801" />
+        </div>
+        <div class="major-icon-label" data-node-id="809:115186">
+          <div class="major-icon-status-img" data-node-id="809:115187">
+            <img alt="" src="images/3a4dea9a4188a89473c7b1d5f181125842d30090.svg" data-node-id="I809:115187;7883:29893" />
+          </div>
+          <p class="major-icon-text-ok" data-node-id="809:115188">无结构损伤</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Skeleton (first, no label) -->
+  <div class="skeleton-wrapper" data-node-id="809:115189" data-name="Section - SkeletonDiagram">
+    <div class="skeleton-photo" data-node-id="809:115197">
+      <div class="photo-wrap" data-node-id="809:115198">
+        <img class="base-img" alt="" src="images/a37e1be1f55430e162eb9ebed4ca54b276a13451.png" />
+      </div>
+      <div class="nav-btn left" style="position:absolute;top:118px;left:8px" data-node-id="809:115199">
+        <img alt="" src="images/3ce9f22520b3fec0788583c3346e78e98048f13b.svg" data-node-id="I809:115200;7885:26995" />
+      </div>
+      <div class="nav-btn right" style="position:absolute;top:118px;left:318px" data-node-id="809:115201">
+        <img alt="" src="images/456a916ef30efc6fea45cdf1269624174dc7b6f8.svg" data-node-id="I809:115202;7885:28461" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Heading: 车辆检测 -->
+  <div class="section-heading" data-node-id="809:115203" data-name="Heading 3">
+    <div class="section-heading-inner" data-node-id="809:115204">
+      <div class="section-heading-bar" data-node-id="809:115205"></div>
+      <p class="section-heading-text-lg" data-node-id="809:115206">车辆检测</p>
+    </div>
+  </div>
+
+  <!-- Section Skeleton (vehicle damage diagram) -->
+  <div class="skeleton-wrapper" data-node-id="809:115207" data-name="Section - SkeletonDiagram">
+    <div class="skeleton-photo" data-node-id="809:115215">
+      <div class="photo-wrap" data-node-id="809:115216">
+        <img class="base-img" alt="" src="images/a37e1be1f55430e162eb9ebed4ca54b276a13451.png" />
+        <div class="skeleton-overlay-img" data-node-id="809:115217" data-name="右前翼子板内板">
+          <img alt="" src="images/ac944c7acbdf30c672100342f2d3a59fda181919.png" />
+        </div>
+      </div>
+    </div>
+    <div data-node-id="809:115218">
+      <p class="damage-count" data-node-id="809:115219">共6处存在损伤问题</p>
+    </div>
+    <!-- Damage tags -->
+    <div class="damage-list" data-node-id="809:115220">
+      <div class="damage-tag highlighted" data-node-id="809:115221">
+        <div class="damage-tag-icon" data-node-id="809:115222">
+          <img alt="" src="images/7cd31c41299edaf4eef38f39fbd9c39ef730132d.svg" data-node-id="I809:115222;7820:22030" />
+        </div>
+        <p class="damage-tag-text" data-node-id="809:115223">右前翼子板内板｜变形</p>
+      </div>
+      <div class="damage-tag" data-node-id="809:115224">
+        <div class="damage-tag-icon" data-node-id="809:115225">
+          <img alt="" src="images/7cd31c41299edaf4eef38f39fbd9c39ef730132d.svg" data-node-id="I809:115225;7820:22030" />
+        </div>
+        <p class="damage-tag-text" data-node-id="809:115226">右前梁头｜整形</p>
+      </div>
+      <div class="damage-tag" data-node-id="809:115227">
+        <div class="damage-tag-icon" data-node-id="809:115228">
+          <img alt="" src="images/7cd31c41299edaf4eef38f39fbd9c39ef730132d.svg" data-node-id="I809:115228;7820:22030" />
+        </div>
+        <p class="damage-tag-text" data-node-id="809:115229">左前梁头｜拆卸痕迹</p>
+      </div>
+      <div class="damage-tag" data-node-id="809:115230">
+        <div class="damage-tag-icon" data-node-id="809:115231">
+          <img alt="" src="images/7cd31c41299edaf4eef38f39fbd9c39ef730132d.svg" data-node-id="I809:115231;7820:22030" />
+        </div>
+        <p class="damage-tag-text" data-node-id="809:115232">右前灯架=车辆支架｜切焊</p>
+      </div>
+      <div class="damage-tag" data-node-id="809:115233">
+        <div class="damage-tag-icon" data-node-id="809:115234">
+          <img alt="" src="images/7cd31c41299edaf4eef38f39fbd9c39ef730132d.svg" data-node-id="I809:115234;7820:22030" />
+        </div>
+        <p class="damage-tag-text" data-node-id="809:115235">前保险杠｜变形</p>
+      </div>
+      <div class="damage-tag" data-node-id="809:115236">
+        <div class="damage-tag-icon" data-node-id="809:115237">
+          <img alt="" src="images/7cd31c41299edaf4eef38f39fbd9c39ef730132d.svg" data-node-id="I809:115237;7820:22030" />
+        </div>
+        <p class="damage-tag-text" data-node-id="809:115238">后保险杠｜破裂</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Heading: 漆面厚度 -->
+  <div class="section-heading" data-node-id="809:115254" data-name="Heading 2">
+    <div class="section-heading-inner" data-node-id="809:115255">
+      <div class="section-heading-bar" data-node-id="809:115256"></div>
+      <p class="section-heading-text-md" data-node-id="809:115257">漆面厚度</p>
+    </div>
+  </div>
+
+  <!-- PaintThickness -->
+  <div class="paint-wrapper" data-node-id="809:115258" data-name="Section - PaintThickness">
+    <div class="paint-grid" data-node-id="809:115259">
+      <!-- Row 1 -->
+      <div class="paint-cell" data-node-id="809:115260">
+        <p class="paint-cell-label" data-node-id="809:115263">前盖</p>
+        <p class="paint-cell-range" data-node-id="809:115265">(120-160µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115268">125</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115269">
+        <p class="paint-cell-label" data-node-id="809:115273">左前翼子板</p>
+        <p class="paint-cell-range" data-node-id="809:115275">(110-150µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115277">118</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115278">
+        <p class="paint-cell-label" data-node-id="809:115282">左A柱外板</p>
+        <p class="paint-cell-range" data-node-id="809:115284">(130-150µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115286">112</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115287">
+        <p class="paint-cell-label" data-node-id="809:115291">左前门</p>
+        <p class="paint-cell-range" data-node-id="809:115293">(110-160µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115295">122</p>
+      </div>
+      <div class="paint-cell" style="border-right:1px solid #e2e8f0" data-node-id="809:115296">
+        <p class="paint-cell-label" data-node-id="809:115300">左上边梁</p>
+        <p class="paint-cell-range" data-node-id="809:115302">(110-140µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115304">115</p>
+      </div>
+      <!-- Row 2 -->
+      <div class="paint-cell" data-node-id="809:115305">
+        <p class="paint-cell-label" data-node-id="809:115309">左后门</p>
+        <p class="paint-cell-range" data-node-id="809:115311">(100-160µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115313">120</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115314">
+        <p class="paint-cell-label" data-node-id="809:115318">左C柱外板</p>
+        <p class="paint-cell-range" data-node-id="809:115320">(70-100µm)</p>
+        <p class="paint-cell-value error" data-node-id="809:115322">114</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115323">
+        <p class="paint-cell-label" data-node-id="809:115327">左后翼子板</p>
+        <p class="paint-cell-range" data-node-id="809:115329">(130-160µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115331">121</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115332">
+        <p class="paint-cell-label" data-node-id="809:115336">车顶</p>
+        <p class="paint-cell-range" data-node-id="809:115337">(110-140µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115339">120</p>
+      </div>
+      <div class="paint-cell" style="border-right:1px solid #e2e8f0" data-node-id="809:115340">
+        <p class="paint-cell-label" data-node-id="809:115344">后盖</p>
+        <p class="paint-cell-range" data-node-id="809:115345">(100-140µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115347">119</p>
+      </div>
+      <!-- Row 3 -->
+      <div class="paint-cell" data-node-id="809:115348">
+        <p class="paint-cell-label" data-node-id="809:115352">右后翼子板</p>
+        <p class="paint-cell-range" data-node-id="809:115353">(120-150µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115355">123</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115356">
+        <p class="paint-cell-label" data-node-id="809:115360">右C柱外板</p>
+        <p class="paint-cell-range" data-node-id="809:115361">(70-90µm)</p>
+        <p class="paint-cell-value error" data-node-id="809:115363">111</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115364">
+        <p class="paint-cell-label" data-node-id="809:115368">右后门</p>
+        <p class="paint-cell-range" data-node-id="809:115369">(120-160µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115371">122</p>
+      </div>
+      <div class="paint-cell" data-node-id="809:115372">
+        <p class="paint-cell-label" data-node-id="809:115376">右上边梁</p>
+        <p class="paint-cell-range" data-node-id="809:115377">(120-150µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115379">116</p>
+      </div>
+      <div class="paint-cell" style="border-right:1px solid #e2e8f0" data-node-id="809:115380">
+        <p class="paint-cell-label" data-node-id="809:115384">右前门</p>
+        <p class="paint-cell-range" data-node-id="809:115385">(110-150µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115387">118</p>
+      </div>
+      <!-- Row 4 -->
+      <div class="paint-cell row4" data-node-id="809:115388">
+        <p class="paint-cell-label" data-node-id="809:115392">右A柱外板</p>
+        <p class="paint-cell-range" data-node-id="809:115393">(120-150µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115395">113</p>
+      </div>
+      <div class="paint-cell row4" data-node-id="809:115396">
+        <p class="paint-cell-label" data-node-id="809:115400">右前翼子板</p>
+        <p class="paint-cell-range" data-node-id="809:115401">(120-150µm)</p>
+        <p class="paint-cell-value" data-node-id="809:115403">120</p>
+      </div>
+      <div class="paint-cell row4 empty" style="border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0" data-node-id="809:115404"></div>
+      <div class="paint-cell row4 empty" style="border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0" data-node-id="809:115405"></div>
+      <div class="paint-cell row4 empty" style="border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;border-right:1px solid #e2e8f0" data-node-id="809:115406"></div>
+    </div>
+  </div>
+
+  <!-- Spacer -->
+  <div class="spacer-12" data-node-id="809:115496" data-name="Heading 4"></div>
+
+  <!-- Inspector Info -->
+  <div class="inspector-wrapper" data-node-id="809:115443">
+    <div class="inspector-inner" data-node-id="809:115444" data-name="Section - VehicleSpecsGrid">
+      <!-- 经销商 row -->
+      <div class="inspector-grid" data-node-id="809:115445">
+        <div class="inspector-row" style="border-bottom:none" data-node-id="809:115461">
+          <span class="inspector-label" data-node-id="809:115463">经销商</span>
+          <span class="inspector-value" style="text-align:right" data-node-id="809:115465">上海永达东沃汽车销售服务有限公司</span>
+        </div>
+      </div>
+      <!-- 检测师 row -->
+      <div class="inspector-grid" data-node-id="809:115489">
+        <div class="inspector-row" data-node-id="809:115490">
+          <span class="inspector-label" data-node-id="809:115492">检测师</span>
+          <div class="inspector-sig-wrapper" data-node-id="809:115493">
+            <div class="inspector-sig-img" data-node-id="810:115502">
+              <img alt="" src="images/ac273b6f7fba566081ae256c30e4dfbdddf85589.png" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
